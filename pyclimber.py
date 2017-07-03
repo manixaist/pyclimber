@@ -8,6 +8,7 @@ from pygame.sprite import Group
 from image_resources import ImageResources
 from settings import Settings
 from tilemap import Tilemap
+from player import Player
 
 def run_game():
     # Startup pygame object
@@ -24,6 +25,12 @@ def run_game():
     # Create a 2D tilemap - this takes a list of indices and an image list to produce a tiled surface
     tile_map = Tilemap(settings, screen, settings.map_indicies, image_res.tile_images)
 
+    # Create player
+    player = Player(settings, screen, image_res.player_sprite_images)
+
+    # Overwrite default indices with generated map 
+    tile_map.generate_basic_map(8 , 1)
+
     # Use pygame's simple loop management for a fixed 30 FPS
     clock = pygame.time.Clock()
     while True:
@@ -34,10 +41,10 @@ def run_game():
         clock.tick(30)
 
         # Process system events (key-presses, joystick, etc)
-        gf.check_events(settings, screen)
+        gf.check_events(settings, screen, player)
 
         # Update the game (this will update all sub-object and render them to the screen)
-        gf.update_screen(settings, screen, image_res, tile_map)
+        gf.update_screen(settings, screen, image_res, tile_map, player)
 
 # Invokes the function above when the script is run
 run_game()

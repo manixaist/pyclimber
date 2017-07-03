@@ -10,26 +10,68 @@ class Tilemap():
         self.screen = screen
         self.images = images
         self.indicies = map_indicies
-
-        # TODO - should put a Group() of sprites together based on the indicies
-        # and use them instead, since eventually we'll use that for collision, etc
+        self.screen_rect = screen.get_rect()
+        self.sprite_rect = pygame.Rect((0,0), (0,0))
     
-    def blitme(self):
+    def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
+        """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
+        # Every 'floor' that is not the bottom or below contains 3 tile rows of the same pattern
+        # So just make number_of_floors - 1 entries for those, then generate the bottom 'floor'
+        # which just has a different 3rd row of indices.  If tiles below that are needed for
+        # looks then they all use the same pattern
+        empty_row = [-1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1]
+        bottom_row = [-1, 6, 9,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 10, 8, -1]
+        sub_row = [-1, 6, 7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7, 7, 8, -1]
+
+        row_index = 0
+        new_indices = []
+        while row_index < (number_of_floors - 1):
+            new_indices.extend(empty_row)
+            new_indices.extend(empty_row)
+            new_indices.extend(empty_row)
+            row_index += 1
+
+        # bottom floor
+        new_indices.extend(empty_row)
+        new_indices.extend(empty_row)
+        new_indices.extend(bottom_row)
+
+        # optional sub-bottom floor row
+        row_index = 0
+        while row_index < number_of_subfloor_rows:
+            new_indices.extend(sub_row)
+            row_index += 1
+
+        x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
+        x_offset += self.settings.tile_width * ((self.settings.map_width - self.settings.map_playable_width)/2)
+        self.sprite_rect.left = x_offset
+        self.sprite_rect.width = self.settings.map_playable_width * self.settings.tile_width
+        self.sprite_rect.height = self.screen_rect.height
+        self.sprite_rect.left = x_offset
+        self.sprite_rect.bottom = self.screen_rect.height - ((number_of_subfloor_rows + 1) * self.settings.tile_height)
+        
+        self.indicies.clear()
+        self.indicies.extend(new_indices)
+
+    def blitme(self, draw_grid_overlay=False):
         """Draws the tilemap."""
 
-        # This is really just for testing to see if it renders properly based on index
-
-        # Loop through each row and render it, simple for now, map fits on the screen
-        # skipping the Tile entirely for now and just rendering from the indicies
-        # This could work for tiles that were never dynamic (reacting to collisions)
-        x_offset = 128
-        y_offset = 64
+        # Center the map horizontally
+        x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
+        # Make the bottom of the map align with the bottom of the screen
+        number_of_rows = len(self.indicies) / self.settings.map_width
+        map_height = number_of_rows * self.settings.tile_height
+        y_offset = self.screen_rect.height - map_height
         rect = pygame.Rect((x_offset, y_offset), (self.settings.tile_width, self.settings.tile_height))
         tiles_draw_per_row = 0
 
+        # Loop through each row and render it, simple for now, map fits on the screen
         for index in self.indicies:
             if index >= 0:
                 self.screen.blit(self.images[index], rect)
+                if draw_grid_overlay:
+                    color_red = (255, 0, 0)
+                    pygame.draw.rect(self.screen, color_red, rect, 1)
             tiles_draw_per_row += 1
             rect.left += self.settings.tile_width
 
