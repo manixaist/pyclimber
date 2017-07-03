@@ -75,25 +75,34 @@ def blitHelpText(settings, screen):
     font.render_to(screen, (10,90), "F9 to toggle fullscreen", settings.font_color)
     font.render_to(screen, (10,120), "ESC to exit", settings.font_color)
 
+def update_game_objects(settings, tile_map, player):
+    # Update the player
+    player.update(tile_map)
+
+    # TODO - enemies
+
+def draw_game_objects(settings, screen, tile_map, player):
+    # Draw the map - pass True to render a grid overlay on the tiles
+    tile_map.blitme()
+
+    # Draw the player
+    player.blitme()
+
+    # TODO - enemies
+
+    # Draw help text
+    blitHelpText(settings, screen)
+
 def update_screen(settings, screen, image_res, tile_map, player):
     """Update images and flip screen"""
     # Redraw screen each pass
     screen.fill(settings.bg_color)
 
     # UPDATES...
-    # Update the player
-    player.update(tile_map)
+    update_game_objects(settings, tile_map, player)
 
     # DRAWS...
-    # Draw the map - pass True to render a grid overlay on the tiles
-    tile_map.blitme(True)
-
-    # Draw the player
-    player.blitme()
-
-    # Draw help text
-    blitHelpText(settings, screen)
+    draw_game_objects(settings, screen, tile_map, player)
 
     # FLIP....
-    # Make the most recently drawn screen visible
     pygame.display.flip()

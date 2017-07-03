@@ -20,14 +20,14 @@ class Settings():
         self.font_color = (255, 255, 255)
 
         # Global sprite settings
-        self.gravity = 1.15
-        self.terminal_velocity = 10
+        self.gravity = 1.35
+        self.terminal_velocity = 12
         
         # Player sprite settings
         self.player_width = 24
         self.player_height = 32
-        self.player_jump_velocity = - 12
-        self.player_air_jump_velocity = -8
+        self.player_jump_velocity = -15
+        self.player_air_jump_velocity = -10
         self.player_max_air_jumps = 1
         # transparent pixels to offset for horizontal collision (image dependent)
         self.player_sprite_horz_margin = 2
@@ -43,13 +43,6 @@ class Settings():
         self.map_width = 16
         self.map_height = 10
         self.map_playable_width = 10
-        self.map_indicies = [-1, 6, 3, 13, 13, 13, 13, 13, 13, 13, 13, 13, 13, 4, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1,
-                             -1, 6, 9,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1,10, 8, -1,
-                             -1, 6, 7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7, 7, 8, -1]
+        self.map_indicies = [-1]
+        self.map_number_floors = 8
+        self.map_number_subfloors = 1

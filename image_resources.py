@@ -19,6 +19,10 @@ class ImageResources():
         player_images = self.player_sprite_images
         self.load_image_to_tiles('images/sprite_player.bmp', 24, 32, player_images)
 
+        # Load the platform block image
+        self.block_image = pygame.image.load('images/block.bmp')
+        self.block_image.set_colorkey(self.settings.color_key)
+
 
     def load_image_to_tiles(self, file_name, tile_width, tile_height, images):
         """Load the specified image and attempt to split it into tiles

@@ -8,6 +8,7 @@ class Player(Sprite):
 
     def __init__(self, settings, screen, images):
         """Initialize the player sprite"""
+        super().__init__()
         self.settings = settings
         self.screen = screen
         self.images = images
@@ -33,7 +34,7 @@ class Player(Sprite):
         # only worse.  Not a problem for a top-down 2D game :)
 
         # If not on the ground floor, just assume we're falling (for now this will be true)
-        if self.rect.bottom < tile_map.sprite_rect.bottom and self.falling == False:
+        if self.rect.bottom < tile_map.player_bounds_rect.bottom and self.falling == False:
             self.falling = True
             self.falling_frames = 1
 
@@ -46,16 +47,16 @@ class Player(Sprite):
             self.falling_frames += 1
 
         # Bounds check on bottom edge
-        if self.rect.bottom > tile_map.sprite_rect.bottom:
-            self.rect.bottom = tile_map.sprite_rect.bottom
+        if self.rect.bottom > tile_map.player_bounds_rect.bottom:
+            self.rect.bottom = tile_map.player_bounds_rect.bottom
             self.dy = 0.0
             self.falling = False
             self.air_jumps = 0
 
         # Left/Right bounds containment check
-        if (self.dx > 0 and self.rect.right - self.settings.player_sprite_horz_margin < tile_map.sprite_rect.right):
+        if (self.dx > 0 and self.rect.right - self.settings.player_sprite_horz_margin < tile_map.player_bounds_rect.right):
             self.rect.centerx += self.dx
-        elif (self.dx < 0 and self.rect.left + self.settings.player_sprite_horz_margin > tile_map.sprite_rect.left):
+        elif (self.dx < 0 and self.rect.left + self.settings.player_sprite_horz_margin > tile_map.player_bounds_rect.left):
             self.rect.centerx += self.dx
 
     def blitme(self):
