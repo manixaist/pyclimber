@@ -72,16 +72,11 @@ class Tilemap():
         self.block_groups.clear()
         for row in range(0, (self.settings.map_number_floors-1)):
             new_group = Group()
-            # Skip one column per row randomly
-            skip_col = random.randint(0, self.settings.map_playable_width-1)
             # Each column in the eligble row has 4 valid placements for a block
             # Note - there are more permutations, these are just the ones allowed
             # OO OO OO OO
             # XX OX OX OO
             for col in range(0, self.settings.map_playable_width):
-                if col == skip_col:
-                    continue
-
                 # TESTING - for now always fill the top 2 quadrants of the tile with blocks
                 new_block_left = Block(self.settings, self.screen, self.block_image)
                 new_block_right = Block(self.settings, self.screen, self.block_image)

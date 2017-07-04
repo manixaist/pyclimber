@@ -30,9 +30,9 @@ class Settings():
         self.player_air_jump_velocity = -10
         self.player_max_air_jumps = 1
         # transparent pixels to offset for horizontal collision (image dependent)
-        self.player_sprite_horz_margin = 2
+        self.player_sprite_horz_margin = 3
         # transparent pixels to offset for vertical collision (e.g. jumps)
-        self.player_sprite_top_margin = 8
+        self.player_sprite_top_margin = 9
 
         # Player animation names
         self.anim_name_idle_left = 'IDLE.L'

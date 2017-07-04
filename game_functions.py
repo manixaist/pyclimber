@@ -5,27 +5,28 @@ import pygame
 import pygame.freetype
 from player import Player
 
-def check_events(settings, screen, player):
+def check_events(settings, screen, player, tile_map):
     """Watch for keyboard and mouse events"""
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             sys.exit()
 
         elif event.type == pygame.KEYDOWN:
-            check_keydown_events(settings, event, screen, player)
+            check_keydown_events(settings, event, screen, player, tile_map)
         elif event.type == pygame.KEYUP:
         	check_keyup_events(settings, event, screen, player)
 
 
-def check_keydown_events(settings, event, screen, player):
+def check_keydown_events(settings, event, screen, player, tile_map):
     """Respond to key down events"""
     if event.key == pygame.K_ESCAPE:
         sys.exit()
 
     if event.key == pygame.K_r:
-        player.rect.top = screen.get_rect().top
+        player.rect.bottom = tile_map.player_bounds_rect.bottom
         player.dx = 0.0
         player.dy = 0.0
+        tile_map.generate_platforms()
     
     if event.key == pygame.K_LEFT:
         if player.moving_horz == False:
@@ -73,7 +74,7 @@ def blitHelpText(settings, screen):
     font.render_to(screen, (10,10), "LEFT/RIGHT arrows to walk", settings.font_color)
     font.render_to(screen, (10,30), "SPACE to jump", settings.font_color)
     font.render_to(screen, (15,50), "...can jump once in air", settings.font_color)
-    font.render_to(screen, (10,70), "'r' to reset player position", settings.font_color)
+    font.render_to(screen, (10,70), "'r' to reset player and blocks", settings.font_color)
     font.render_to(screen, (10,90), "F9 to toggle fullscreen", settings.font_color)
     font.render_to(screen, (10,120), "ESC to exit", settings.font_color)
 
@@ -84,13 +85,13 @@ def update_game_objects(settings, tile_map, player):
     # TODO - enemies
 
 def draw_game_objects(settings, screen, tile_map, player):
-    # Draw the map - pass True to render a grid overlay on the tiles
-    tile_map.blitme()
-
     # Draw the player
     player.blitme()
 
     # TODO - enemies
+
+    # Draw the map - pass True to render a grid overlay on the tiles
+    tile_map.blitme()
 
     # Draw help text
     blitHelpText(settings, screen)
