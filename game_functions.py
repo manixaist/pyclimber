@@ -31,11 +31,13 @@ def check_keydown_events(settings, event, screen, player):
         if player.moving_horz == False:
             player.dx = -3.0
             player.moving_horz = True
+            player.facing_left = True
     
     if event.key == pygame.K_RIGHT:
         if player.moving_horz == False:
             player.dx = 3.0
             player.moving_horz = True
+            player.facing_left = False
     
     if event.key == pygame.K_F9:
         if settings.fullscreen == True:

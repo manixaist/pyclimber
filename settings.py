@@ -34,6 +34,16 @@ class Settings():
         # transparent pixels to offset for vertical collision (e.g. jumps)
         self.player_sprite_top_margin = 8
 
+        # Player animation names
+        self.anim_name_idle_left = 'IDLE.L'
+        self.anim_name_idle_right = 'IDLE.R'
+        self.anim_name_walk_left = 'WALK.L'
+        self.anim_name_walk_right = 'WALK.R'
+        self.anim_name_jump_up_left = 'JUMPUP.L'
+        self.anim_name_jump_down_left = 'JUMPDOWN.L'
+        self.anim_name_jump_up_right = 'JUMPUP.R'
+        self.anim_name_jump_down_right = 'JUMPDOWN.R'
+
         # Tile settings
         self.tile_width = 24
         self.tile_height = 24
