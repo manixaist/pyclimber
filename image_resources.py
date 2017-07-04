@@ -17,7 +17,12 @@ class ImageResources():
         # Load the sprite frames
         self.player_sprite_images = []
         player_images = self.player_sprite_images
-        self.load_image_to_tiles('images/sprite_player.bmp', 24, 32, player_images)
+        self.load_image_to_tiles('images/sprite_player.bmp', self.settings.player_width, self.settings.player_height, player_images)
+
+        # Load the enemy blob frames
+        self.enemy_blob_images = []
+        blob_images = self.enemy_blob_images
+        self.load_image_to_tiles('images/sprite_blob.bmp', self.settings.enemy_blob_width, self.settings.enemy_blob_height, blob_images)
 
         # Load the platform block image
         self.block_image = pygame.image.load('images/block.bmp')

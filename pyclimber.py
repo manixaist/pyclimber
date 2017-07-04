@@ -1,17 +1,17 @@
 """This module is the main entry for the Py-Climber game"""
 
-import sys
-import time
-import pygame
-import random
 import game_functions as gf
-from pygame.sprite import Group
 from image_resources import ImageResources
 from settings import Settings
 from tilemap import Tilemap
 from player import Player
+from blob_enemy import Blob
+import random
+import pygame
 
 def run_game():
+    """Main entry point for Py-Climber"""
+
     # Startup pygame object
     pygame.init()
 
@@ -34,6 +34,13 @@ def run_game():
     # Create player
     player = Player(settings, screen, image_res.player_sprite_images, tile_map)
 
+    # Create an enemies list, add 1
+    enemies = []
+    enemy = Blob(settings, screen, image_res.enemy_blob_images)
+    enemy.rect.centerx = tile_map.player_bounds_rect.centerx
+    enemy.rect.top = tile_map.player_bounds_rect.top
+    enemies.append(enemy)
+
     # Use pygame's simple loop management for a fixed 30 FPS
     clock = pygame.time.Clock()
     while True:
@@ -44,10 +51,10 @@ def run_game():
         clock.tick(30)
 
         # Process system events (key-presses, joystick, etc)
-        gf.check_events(settings, screen, player, tile_map)
+        gf.check_events(settings, screen, image_res, player, tile_map, enemies)
 
         # Update the game (this will update all sub-object and render them to the screen)
-        gf.update_screen(settings, screen, image_res, tile_map, player)
+        gf.update_screen(settings, screen, image_res, tile_map, player, enemies)
 
 # Invokes the function above when the script is run
 run_game()

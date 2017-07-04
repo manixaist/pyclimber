@@ -20,21 +20,22 @@ class Settings():
         self.font_color = (255, 255, 255)
 
         # Global sprite settings
-        self.gravity = 1.35
+        self.gravity = 1.3
         self.terminal_velocity = 12
         
         # Player sprite settings
         self.player_width = 24
         self.player_height = 32
         self.player_jump_velocity = -15
-        self.player_air_jump_velocity = -10
+        self.player_air_jump_velocity = -8
         self.player_max_air_jumps = 1
+        self.player_dx = 2
         # transparent pixels to offset for horizontal collision (image dependent)
         self.player_sprite_horz_margin = 3
         # transparent pixels to offset for vertical collision (e.g. jumps)
         self.player_sprite_top_margin = 9
 
-        # Player animation names
+        # Animation names
         self.anim_name_idle_left = 'IDLE.L'
         self.anim_name_idle_right = 'IDLE.R'
         self.anim_name_walk_left = 'WALK.L'
@@ -44,6 +45,11 @@ class Settings():
         self.anim_name_jump_up_right = 'JUMPUP.R'
         self.anim_name_jump_down_right = 'JUMPDOWN.R'
 
+        # Blob enemy settings
+        self.enemy_blob_width = 16
+        self.enemy_blob_height = 16
+        self.enemy_blob_dx = 1
+        
         # Tile settings
         self.tile_width = 24
         self.tile_height = 24

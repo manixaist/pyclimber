@@ -1,9 +1,9 @@
 """This module implements a 2D tilemap for Py-Climber"""
 
 import pygame
-import random
-from block import Block
 from pygame.sprite import Group
+from block import Block
+
 
 class Tilemap():
     """Represents a collection of tile (sprites) that represent a map"""
@@ -91,7 +91,7 @@ class Tilemap():
             # Shif the bounding rect down one floor
             row_rect = row_rect.move(0, self.settings.tile_height * 3)
 
-    def blitme(self, draw_grid_overlay=False):
+    def draw(self, draw_grid_overlay=False):
         """Draws the tilemap."""
 
         # Center the map horizontally
