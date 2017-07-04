@@ -17,6 +17,7 @@ class Tilemap():
         self.player_bounds_rect = pygame.Rect((0,0), (0,0))
         self.block_image = block_image
         self.block_groups = []
+        self.x_offset = 0
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -25,18 +26,19 @@ class Tilemap():
         # which just has a different 3rd row of indices.  If tiles below that are needed for
         # looks then they all use the same pattern
         empty_row = [-1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1]
-        bottom_row = [-1, 6, 9,  1,  1,  1,  1,  1,  1,  1,  1,  1,  1, 10, 8, -1]
-        sub_row = [-1, 6, 7,  7,  7,  7,  7,  7,  7,  7,  7,  7,  7, 7, 8, -1]
+        pipe_row = [-1, 6, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 16, 8, -1]
+        bottom_row = [-1, 6, 9,  1,  1,  1,  1,  5,  1,  1,  1,  1,  1, 10, 8, -1]
+        sub_row = [-1, 6, 7,  7,  7,  7,  7,  17,  7,  7,  7,  7,  7, 7, 8, -1]
 
         row_index = 0
         new_indices = []
         while row_index < (number_of_floors - 1):
             new_indices.extend(empty_row)
-            new_indices.extend(empty_row)
+            new_indices.extend(pipe_row)
             new_indices.extend(empty_row)
             row_index += 1
 
-        # bottom floor
+        # bottom floor - no enemy generator
         new_indices.extend(empty_row)
         new_indices.extend(empty_row)
         new_indices.extend(bottom_row)
@@ -47,10 +49,10 @@ class Tilemap():
             new_indices.extend(sub_row)
             row_index += 1
 
-        x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
-        x_offset += self.settings.tile_width * ((self.settings.map_width - self.settings.map_playable_width)/2)
+        self.x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
+        x_offset2 = self.x_offset + self.settings.tile_width * ((self.settings.map_width - self.settings.map_playable_width)/2)
         self.player_bounds_rect.top = 0
-        self.player_bounds_rect.left = x_offset
+        self.player_bounds_rect.left = x_offset2
         self.player_bounds_rect.width = self.settings.map_playable_width * self.settings.tile_width
         self.player_bounds_rect.height = self.screen_rect.height - ((number_of_subfloor_rows + 1) * self.settings.tile_height)
         
@@ -94,13 +96,11 @@ class Tilemap():
     def draw(self, draw_grid_overlay=False):
         """Draws the tilemap."""
 
-        # Center the map horizontally
-        x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
         # Make the bottom of the map align with the bottom of the screen
         number_of_rows = len(self.indicies) / self.settings.map_width
         map_height = number_of_rows * self.settings.tile_height
         y_offset = self.screen_rect.height - map_height
-        rect = pygame.Rect((x_offset, y_offset), (self.settings.tile_width, self.settings.tile_height))
+        rect = pygame.Rect((self.x_offset, y_offset), (self.settings.tile_width, self.settings.tile_height))
         tiles_draw_per_row = 0
 
         # Loop through each row and render it, simple for now, map fits on the screen
@@ -116,7 +116,7 @@ class Tilemap():
             # Every row worth of tiles, drop down one level and reset the x coord
             if tiles_draw_per_row == self.settings.map_width:
                 rect.top += self.settings.tile_height
-                rect.left = x_offset
+                rect.left = self.x_offset
                 tiles_draw_per_row = 0
 
         # Draw the blocks

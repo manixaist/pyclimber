@@ -24,24 +24,14 @@ def check_keydown_events(settings, image_res, event, screen, player, tile_map, e
         sys.exit()
 
     if event.key == pygame.K_a:
-        enemy = Blob(settings, screen, image_res.enemy_blob_images)
-        enemy.rect.left =  random.randint(tile_map.player_bounds_rect.left, tile_map.player_bounds_rect.right - settings.enemy_blob_width)
-        enemy.rect.top = tile_map.player_bounds_rect.top
-        if random.randint(0, 100) > 50:
-            enemy.facing_left = True
-            enemy.set_current_animation(settings.anim_name_walk_left)
-            enemy.dx = -1 * settings.enemy_blob_dx
-        enemies.append(enemy)
+        generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
         
     if event.key == pygame.K_r:
         player.rect.bottom = tile_map.player_bounds_rect.bottom
         player.dx = 0.0
         player.dy = 0.0
         enemies.clear()
-        enemy = Blob(settings, screen, image_res.enemy_blob_images)
-        enemy.rect.centerx = tile_map.player_bounds_rect.centerx
-        enemy.rect.top = tile_map.player_bounds_rect.top
-        enemies.append(enemy)
+        generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
         tile_map.generate_platforms()
     
     if event.key == pygame.K_LEFT:
@@ -79,6 +69,33 @@ def check_keyup_events(settings, event, screen, player, enemies):
         if player.dx != 0.0:
             player.dx = 0.0
 
+def generate_new_random_blob(settings, screen, images, tile_map, enemies):
+    """Generate a new blob enemy and add it to the list"""
+    # How this should work:  First pick a floor, this is the middle_row of the triad created
+    # when generating the map, e.g. not the floor and not a level where blocks can appear
+    floor_number = random.randint(0, settings.map_number_floors - 2)
+
+    # Secondly pick a side, left or right (this will affect placement and initial velocity, etc)
+    facing_left = random.choice([True, False])
+
+    # Calculate initial position / velocity / facing flags
+    enemy = Blob(settings, screen, images)
+    enemy.rect.bottom = settings.tile_height * ( 2 + (3 * floor_number))
+    enemy.rect.left = 3 * settings.tile_width + tile_map.x_offset
+    enemy.dx = settings.enemy_blob_dx
+
+    if facing_left:
+        enemy.rect.left += 10 * settings.tile_width
+        enemy.dx *= -1.0
+        enemy.facing_left = True
+        enemy.set_current_animation(settings.anim_name_walk_left)
+    else:
+        enemy.facing_left = False
+        enemy.set_current_animation(settings.anim_name_walk_right)
+
+    # Add it to the list
+    enemies.append(enemy)
+    
 def blitHelpText(settings, screen):
     """Draws the text explaining what keys do what"""
     color_white = (255, 255, 255)
