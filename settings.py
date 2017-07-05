@@ -44,6 +44,7 @@ class Settings():
         self.anim_name_jump_down_left = 'JUMPDOWN.L'
         self.anim_name_jump_up_right = 'JUMPUP.R'
         self.anim_name_jump_down_right = 'JUMPDOWN.R'
+        self.anim_name_dead = 'DEAD'
 
         # Blob enemy settings
         self.enemy_blob_width = 16

@@ -1,9 +1,10 @@
 """This module implements the player object (sprite) for Py-Climber"""
 
+import game_functions as gf
 from tilemap import Tilemap
 from animation import Animation
 from animated_sprite import AnimatedSprite
-
+import pygame
 
 class Player(AnimatedSprite):
     """Player object"""
@@ -38,13 +39,17 @@ class Player(AnimatedSprite):
         self.animations[self.settings.anim_name_jump_down_left] = Animation([16], 5)
         self.animations[self.settings.anim_name_jump_up_right] = Animation([17], 5)
         self.animations[self.settings.anim_name_jump_down_right] = Animation([18], 5)
+        self.animations[self.settings.anim_name_dead] = Animation([4], 5)
         self.current_animation = self.settings.anim_name_idle_left
         self.facing_left = True
 
     def update_current_animation(self):
         """Set the correct animation based on state"""
+        # DEAD
+        if self.dying:
+            self.set_current_animation(self.settings.anim_name_dead)
         # IDLE
-        if self.dx == 0 and self.dy == 0:
+        elif self.dx == 0 and self.dy == 0:
             if self.facing_left:
                 self.set_current_animation(self.settings.anim_name_idle_left)
             else:
@@ -78,13 +83,34 @@ class Player(AnimatedSprite):
         # Now do a standard check with the adjusted Rect
         return player_rect.colliderect(block.rect)
 
-    def update(self, tile_map):
+    def update(self, tile_map, enemies):
         """Updates the player sprite's position"""
 
-        # AnimatedSprite handles most of this
-        super().update(tile_map)
-        if self.dy == 0:
-            self.air_jumps = 0
+        if not self.dying:
+            # AnimatedSprite handles most of this
+            super().update(tile_map)
+            if self.dy == 0:
+                self.air_jumps = 0
+
+            # The player needs to also check against the group of enemy sprites
+            intersected_blobs = pygame.sprite.spritecollide(self, enemies, False, self.collision_check)
+            if intersected_blobs:
+                self.dying = True
+                self.dy = -15
+                self.falling = True
+                self.falling_frames = 1
+        else:
+            if self.rect.top > self.screen_rect.bottom:
+                # For now, just reset the player position, but nothing else
+                self.rect.bottom = tile_map.player_bounds_rect.bottom
+                self.dx = 0.0
+                self.dy = 0.0
+                self.dying = False
+            else:
+                if self.dy < self.settings.terminal_velocity:
+                    self.dy += self.settings.gravity
+                self.rect.centery += self.dy
+                self.falling_frames += 1
 
         self.finish_update()
 

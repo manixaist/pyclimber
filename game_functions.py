@@ -17,6 +17,14 @@ def check_events(settings, screen, image_res, player, tile_map, enemies):
         elif event.type == pygame.KEYUP:
         	check_keyup_events(settings, event, screen, player, enemies)
 
+def reset_game(settings, image_res, event, screen, player, tile_map, enemies):
+    player.rect.bottom = tile_map.player_bounds_rect.bottom
+    player.dx = 0.0
+    player.dy = 0.0
+    player.dying = False
+    enemies.clear()
+    generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
+    tile_map.generate_platforms()
 
 def check_keydown_events(settings, image_res, event, screen, player, tile_map, enemies):
     """Respond to key down events"""
@@ -27,12 +35,7 @@ def check_keydown_events(settings, image_res, event, screen, player, tile_map, e
         generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
         
     if event.key == pygame.K_r:
-        player.rect.bottom = tile_map.player_bounds_rect.bottom
-        player.dx = 0.0
-        player.dy = 0.0
-        enemies.clear()
-        generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
-        tile_map.generate_platforms()
+        reset_game(settings, image_res, event, screen, player, tile_map, enemies)
     
     if event.key == pygame.K_LEFT:
         if player.dx == 0.0:
@@ -109,12 +112,12 @@ def blitHelpText(settings, screen):
     font.render_to(screen, (10,140), "ESC to exit", settings.font_color)
 
 def update_game_objects(settings, tile_map, player, enemies):
-    # Update the player
-    player.update(tile_map)
-
     # Enemy
     for enemy in enemies:
         enemy.update(tile_map)
+
+    # Update the player
+    player.update(tile_map, enemies)
 
 def draw_game_objects(settings, screen, tile_map, player, enemies):
     # Draw the player

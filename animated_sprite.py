@@ -23,6 +23,7 @@ class AnimatedSprite(Sprite):
         self.dy = 0.0
         self.falling = False
         self.falling_frames = 0
+        self.dying = False
 
         # These are designed to be overridden by the parent class
         self.animations = {}

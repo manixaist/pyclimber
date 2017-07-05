@@ -42,15 +42,31 @@ class Blob(AnimatedSprite):
     def update(self, tile_map):
         """Updates the blob sprite's position"""
         
-        last_dx = self.dx
-        super().update(tile_map)
-        # Blobs only stop when they hit a wall so reverse course
-        if last_dx != 0 and self.dx == 0:
-            self.facing_left = not self.facing_left
-            if self.facing_left:
-                self.dx = 1.0
-            else:
-                self.dx = -1.0
+        if not self.dying:
+            last_dx = self.dx
+            super().update(tile_map)
+            # Blobs only stop when they hit a wall so reverse course
+            if last_dx != 0 and self.dx == 0:
+                self.facing_left = not self.facing_left
+                if self.facing_left:
+                    self.dx = 1.0
+                else:
+                    self.dx = -1.0
+
+            # Check if the blob is over the "exit" for the enemies, and if so, drop it down
+            if tile_map.drainrect.colliderect(self.rect):
+                self.dying = True
+                self.falling = True
+                self.falling_frames = 1
+        else:
+            if self.dy < self.settings.terminal_velocity:
+                self.dy += self.settings.gravity
+            
+            self.rect.centery += self.dy
+            self.falling_frames += 1
+
+            if self.rect.top > self.screen_rect.bottom:
+                self.kill()
 
         self.finish_update()
 

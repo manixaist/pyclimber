@@ -18,6 +18,7 @@ class Tilemap():
         self.block_image = block_image
         self.block_groups = []
         self.x_offset = 0
+        self.drainrect = pygame.Rect((0,0), (0,0))
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -29,6 +30,7 @@ class Tilemap():
         pipe_row = [-1, 6, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 16, 8, -1]
         bottom_row = [-1, 6, 9,  1,  1,  1,  1,  5,  1,  1,  1,  1,  1, 10, 8, -1]
         sub_row = [-1, 6, 7,  7,  7,  7,  7,  17,  7,  7,  7,  7,  7, 7, 8, -1]
+        drain_col = 7
 
         row_index = 0
         new_indices = []
@@ -56,6 +58,14 @@ class Tilemap():
         self.player_bounds_rect.width = self.settings.map_playable_width * self.settings.tile_width
         self.player_bounds_rect.height = self.screen_rect.height - ((number_of_subfloor_rows + 1) * self.settings.tile_height)
         
+        # Drain collision rect
+        self.drainrect.width = self.settings.tile_width
+        self.drainrect.height = self.settings.tile_height
+        self.drainrect.top = self.player_bounds_rect.bottom
+        self.drainrect.left = self.settings.tile_width * drain_col + self.x_offset
+        self.drainrect.inflate_ip(self.settings.tile_width * -0.99, self.settings.tile_height * -0.75)
+        self.drainrect.move_ip(0, self.settings.tile_height * -0.5)
+
         self.indicies.clear()
         self.indicies.extend(new_indices)
         
