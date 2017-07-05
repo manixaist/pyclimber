@@ -1,8 +1,9 @@
 """This module implements a 2D tilemap for Py-Climber"""
 
+from block import Block
+import random
 import pygame
 from pygame.sprite import Group
-from block import Block
 
 
 class Tilemap():
@@ -71,6 +72,32 @@ class Tilemap():
         
         self.generate_platforms()
 
+    def generate_block(self, x, y):
+        """Create a new Block object at the given x,y and return it"""
+        new_block = Block(self.settings, self.screen, self.block_image)
+        new_block.rect.top = y
+        new_block.rect.left = x
+        return new_block
+
+    def generate_blocks(self, bounding_rect, group, bottom_left=False, bottom_right=False):
+        """Generates one of 4 possible block combinations"""
+        # Always add the top 2 quadrants
+        image_rect = self.block_image.get_rect()
+        block_top_left = self.generate_block(bounding_rect.left, bounding_rect.top)
+        block_top_right = self.generate_block(bounding_rect.left + image_rect.width, bounding_rect.top)
+        group.add(block_top_left)
+        group.add(block_top_right)
+
+        # The bottom 2 are optional and random
+        # Note these offsets work because the blocks are 1/4 the size of the tile by design
+        if bottom_left:
+            block_bottom_left = self.generate_block(bounding_rect.left, bounding_rect.top + image_rect.height)
+            group.add(block_bottom_left)
+
+        if bottom_right:
+            block_bottom_right = self.generate_block(bounding_rect.left + image_rect.width, bounding_rect.top + image_rect.height)
+            group.add(block_bottom_right)
+
     def generate_platforms(self):
         """Make groups of sprites that contain the blocks for the player to stand on"""
 
@@ -84,21 +111,18 @@ class Tilemap():
         self.block_groups.clear()
         for row in range(0, (self.settings.map_number_floors-1)):
             new_group = Group()
+
             # Each column in the eligble row has 4 valid placements for a block
             # Note - there are more permutations, these are just the ones allowed
             # OO OO OO OO
             # XX OX OX OO
             for col in range(0, self.settings.map_playable_width):
-                # TESTING - for now always fill the top 2 quadrants of the tile with blocks
-                new_block_left = Block(self.settings, self.screen, self.block_image)
-                new_block_right = Block(self.settings, self.screen, self.block_image)
-                new_block_left.rect.top = row_rect.top
-                new_block_left.rect.left = row_rect.left + col * self.settings.tile_width
-                new_block_right.rect = new_block_left.rect.move(new_block_right.rect.width, 0)
-                new_group.add(new_block_left)
-                new_group.add(new_block_right)
+                bounding_rect = pygame.Rect(0, 0, 0,0)
+                bounding_rect.top = row_rect.top
+                bounding_rect.left = row_rect.left + col * self.settings.tile_width
+                self.generate_blocks(bounding_rect, new_group, random.choice([True, False]), random.choice([True, False]))
             
-            # Each row is it's own group.  This should limit collision checks later
+            # Each row is its own group.  This could limit collision checks later
             self.block_groups.append(new_group)
             # Shif the bounding rect down one floor
             row_rect = row_rect.move(0, self.settings.tile_height * 3)

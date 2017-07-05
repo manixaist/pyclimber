@@ -29,6 +29,9 @@ class Player(AnimatedSprite):
         # These are specific to the player object
         self.air_jumps = 0
         self.max_air_jumps = settings.player_max_air_jumps
+        self.idle_top = False
+        self.idle_counter = 0
+        self.reset_game = False
 
         # Add the animations for the player
         self.animations[self.settings.anim_name_idle_left] = Animation([0, 1, 2, 3, 2, 1], 5)
@@ -46,7 +49,9 @@ class Player(AnimatedSprite):
     def update_current_animation(self):
         """Set the correct animation based on state"""
         # DEAD
-        if self.dying:
+        if self.idle_top:
+            self.set_current_animation(self.settings.anim_name_idle_left)
+        elif self.dying:
             self.set_current_animation(self.settings.anim_name_dead)
         # IDLE
         elif self.dx == 0 and self.dy == 0:
@@ -87,18 +92,30 @@ class Player(AnimatedSprite):
         """Updates the player sprite's position"""
 
         if not self.dying:
-            # AnimatedSprite handles most of this
-            super().update(tile_map)
-            if self.dy == 0:
-                self.air_jumps = 0
+            # Check if we're on the top row
+            if self.idle_top:
+                self.idle_counter +=1
+                if self.idle_counter > (30 * 3):
+                    self.reset_game = True
+            else:
+                # AnimatedSprite handles most of this
+                super().update(tile_map)
+                if self.dy == 0:
+                    self.air_jumps = 0
 
-            # The player needs to also check against the group of enemy sprites
-            intersected_blobs = pygame.sprite.spritecollide(self, enemies, False, self.collision_check)
-            if intersected_blobs:
-                self.dying = True
-                self.dy = -15
-                self.falling = True
-                self.falling_frames = 1
+                # The player needs to also check against the group of enemy sprites
+                intersected_blobs = pygame.sprite.spritecollide(self, enemies, False, self.collision_check)
+                if intersected_blobs:
+                    self.dying = True
+                    self.dy = -15
+                    self.falling = True
+                    self.falling_frames = 1
+                    
+                player_idle = ((self.current_animation == self.settings.anim_name_idle_left) or (self.current_animation == self.settings.anim_name_idle_right))
+                player_walking = ((self.current_animation == self.settings.anim_name_walk_left) or (self.current_animation == self.settings.anim_name_walk_right))
+                if (self.rect.bottom <= tile_map.player_bounds_rect.top + 2 * self.settings.tile_height) and (player_idle or player_walking):
+                    self.idle_top = True
+                    self.idle_counter = 0
         else:
             if self.rect.top > self.screen_rect.bottom:
                 # For now, just reset the player position, but nothing else

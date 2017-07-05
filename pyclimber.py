@@ -40,6 +40,7 @@ def run_game():
 
     # Use pygame's simple loop management for a fixed 30 FPS
     clock = pygame.time.Clock()
+    new_enemy_counter = 0
     while True:
         # Should make sure each frame spends at least 1/30 seconds in this loop
         # downside is wasted sleep on fast hardware and slow hardware will lag
@@ -52,6 +53,14 @@ def run_game():
 
         # Update the game (this will update all sub-object and render them to the screen)
         gf.update_screen(settings, screen, image_res, tile_map, player, enemies)
+
+        if player.reset_game:
+            gf.reset_game(settings, image_res, screen, player, tile_map, enemies)
+
+        new_enemy_counter += 1
+        if new_enemy_counter >= settings.enemy_generation_rate:
+            new_enemy_counter = 0
+            gf.generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
 
 # Invokes the function above when the script is run
 run_game()

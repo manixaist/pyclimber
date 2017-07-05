@@ -17,11 +17,14 @@ def check_events(settings, screen, image_res, player, tile_map, enemies):
         elif event.type == pygame.KEYUP:
         	check_keyup_events(settings, event, screen, player, enemies)
 
-def reset_game(settings, image_res, event, screen, player, tile_map, enemies):
+def reset_game(settings, image_res, screen, player, tile_map, enemies):
     player.rect.bottom = tile_map.player_bounds_rect.bottom
     player.dx = 0.0
     player.dy = 0.0
     player.dying = False
+    player.idle_counter = 0
+    player.idle_top = False
+    player.reset_game = False
     enemies.clear()
     generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
     tile_map.generate_platforms()
@@ -35,18 +38,20 @@ def check_keydown_events(settings, image_res, event, screen, player, tile_map, e
         generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
         
     if event.key == pygame.K_r:
-        reset_game(settings, image_res, event, screen, player, tile_map, enemies)
+        reset_game(settings, image_res, screen, player, tile_map, enemies)
     
     if event.key == pygame.K_LEFT:
-        if player.dx == 0.0:
-            player.dx = -1 * settings.player_dx
-            player.facing_left = True
+        if not player.idle_top:
+            if player.dx == 0.0:
+                player.dx = -1 * settings.player_dx
+                player.facing_left = True
     
     if event.key == pygame.K_RIGHT:
-        if player.dx == 0.0:
-            player.dx = settings.player_dx
-            player.facing_left = False
-    
+        if not player.idle_top:
+            if player.dx == 0.0:
+                player.dx = settings.player_dx
+                player.facing_left = False
+        
     if event.key == pygame.K_F9:
         if settings.fullscreen == True:
             settings.fullscreen = False
@@ -57,20 +62,23 @@ def check_keydown_events(settings, image_res, event, screen, player, tile_map, e
 
 def check_keyup_events(settings, event, screen, player, enemies):
     if event.key == pygame.K_SPACE:
-        if player.falling == False:
-            player.dy = settings.player_jump_velocity
-            player.falling = True
-        elif player.air_jumps < player.max_air_jumps:
-            player.dy = settings.player_air_jump_velocity
-            player.air_jumps += 1
+        if not player.idle_top:
+            if player.falling == False:
+                player.dy = settings.player_jump_velocity
+                player.falling = True
+            elif player.air_jumps < player.max_air_jumps:
+                player.dy = settings.player_air_jump_velocity
+                player.air_jumps += 1
 
     if event.key == pygame.K_LEFT:
-        if player.dx != 0.0:
-            player.dx = 0.0
-    
+        if not player.idle_top:
+            if player.dx != 0.0:
+                player.dx = 0.0
+        
     if event.key == pygame.K_RIGHT:
-        if player.dx != 0.0:
-            player.dx = 0.0
+        if not player.idle_top:
+            if player.dx != 0.0:
+                player.dx = 0.0
 
 def generate_new_random_blob(settings, screen, images, tile_map, enemies):
     """Generate a new blob enemy and add it to the list"""

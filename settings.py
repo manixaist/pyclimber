@@ -20,7 +20,7 @@ class Settings():
         self.font_color = (255, 255, 255)
 
         # Global sprite settings
-        self.gravity = 1.3
+        self.gravity = 1.4
         self.terminal_velocity = 12
         
         # Player sprite settings
@@ -50,6 +50,7 @@ class Settings():
         self.enemy_blob_width = 16
         self.enemy_blob_height = 16
         self.enemy_blob_dx = 1
+        self.enemy_generation_rate = 30
         
         # Tile settings
         self.tile_width = 24
