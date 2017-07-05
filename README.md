@@ -17,7 +17,7 @@ python pyclimber.py
 Each file contains only one class, or a collection of related functions.  The brief overview of each is listed below.
 
 ### pyclimber.py
-This is the main entry point for the game.  It creates the top level objects and contains the main game loop.  Start here if you want to trace through execution via code inpection or the debugger.
+This is the main entry point for the game.  It creates the top level objects and contains the main game loop.  Start here if you want to trace through execution via code inspection or the debugger.
 
 ### game_functions.py
 Inspired by a project in the *Python Crash Course* book, this module holds common game functions you're likely find in the main loop, such as updating all objects, drawing all objects, handling input, etc.
