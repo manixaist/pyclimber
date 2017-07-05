@@ -34,9 +34,11 @@ def run_game():
     # Create player
     player = Player(settings, screen, image_res.player_sprite_images, tile_map)
 
-    # Create an enemies list, add 1
+    # Create an enemies list
     enemies = []
-    gf.generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
+
+    # Reset the game
+    gf.reset_game(settings, image_res, screen, player, tile_map, enemies)
 
     # Use pygame's simple loop management for a fixed 30 FPS
     clock = pygame.time.Clock()
