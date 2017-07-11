@@ -8,7 +8,8 @@
 ![](http://i.imgur.com/ucUYc06.gif)
 
 ## Running the Game
-This should be all you need provided you have the pygame module installed as well as python3
+You will need the pygame and python3 files installed, as well as the images from my repository (e.g. .\\images\\*) wherever you copy the scripts.  Cloning the repository is the easiest method, or download the whole thing.  I don't have a lot of "extra" stuff in the repo
+
 ```
 python pyclimber.py
 ```
