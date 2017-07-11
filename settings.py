@@ -45,19 +45,27 @@ class Settings():
         self.anim_name_jump_up_right = 'JUMPUP.R'
         self.anim_name_jump_down_right = 'JUMPDOWN.R'
         self.anim_name_dead = 'DEAD'
+        self.anim_name_exit = 'EXIT'
 
         # Blob enemy settings
         self.enemy_blob_width = 16
         self.enemy_blob_height = 16
         self.enemy_blob_dx = 1
-        self.enemy_generation_rate = 30
+        self.enemy_generation_rate = 120
         
         # Tile settings
         self.tile_width = 24
         self.tile_height = 24
 
-        # Size of a "level" TESTING
-        # Test map
+        # Particle generator
+        self.particle_gen_color = (255, 0, 0)
+        self.particle_gen_dx_range = (-8, 8)
+        self.particle_gen_dy_range = (5, 20)
+        self.particle_gen_max_frames = 40
+        self.particle_gen_per_frame = 5
+        
+        
+        # Size of a "level
         self.map_width = 16
         self.map_height = 10
         self.map_playable_width = 10

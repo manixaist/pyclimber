@@ -26,7 +26,7 @@ def run_game():
     pygame.display.set_caption(settings.caption)
     
     # Create a 2D tilemap - this takes a list of indices and an image list to produce a tiled surface
-    tile_map = Tilemap(settings, screen, settings.map_indicies, image_res.tile_images, image_res.block_image)
+    tile_map = Tilemap(settings, screen, settings.map_indicies, image_res.tile_images, image_res.block_image, image_res.blob_exit_images)
 
     # Overwrite default indices with generated map 
     tile_map.generate_basic_map(settings.map_number_floors , settings.map_number_subfloors)
@@ -55,7 +55,7 @@ def run_game():
 
         # Update the game (this will update all sub-object and render them to the screen)
         gf.update_screen(settings, screen, image_res, tile_map, player, enemies)
-
+        
         if player.reset_game:
             gf.reset_game(settings, image_res, screen, player, tile_map, enemies)
 

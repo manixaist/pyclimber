@@ -28,6 +28,11 @@ class ImageResources():
         self.block_image = pygame.image.load('images/block.bmp')
         self.block_image.set_colorkey(self.settings.color_key)
 
+        # Load the exit sprite (drill thingy)
+        self.blob_exit_images = []
+        exit_images = self.blob_exit_images
+        self.load_image_to_tiles('images/sprite_exit.bmp', self.settings.tile_width, self.settings.tile_height, exit_images)
+
 
     def load_image_to_tiles(self, file_name, tile_width, tile_height, images):
         """Load the specified image and attempt to split it into tiles

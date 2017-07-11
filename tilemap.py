@@ -1,6 +1,7 @@
 """This module implements a 2D tilemap for Py-Climber"""
 
 from block import Block
+from blob_exit import BlobExit
 import random
 import pygame
 from pygame.sprite import Group
@@ -9,7 +10,7 @@ from pygame.sprite import Group
 class Tilemap():
     """Represents a collection of tile (sprites) that represent a map"""
 
-    def __init__(self, settings, screen, map_indicies, images, block_image):
+    def __init__(self, settings, screen, map_indicies, images, block_image, exit_images):
         self.settings = settings
         self.screen = screen
         self.images = images
@@ -20,6 +21,8 @@ class Tilemap():
         self.block_groups = []
         self.x_offset = 0
         self.drainrect = pygame.Rect((0,0), (0,0))
+        self.blob_exit = None
+        self.exit_images = exit_images
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -29,8 +32,8 @@ class Tilemap():
         # looks then they all use the same pattern
         empty_row = [-1, 6, 8, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 6, 8, -1]
         pipe_row = [-1, 6, 15, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, 16, 8, -1]
-        bottom_row = [-1, 6, 9,  1,  1,  1,  1,  5,  1,  1,  1,  1,  1, 10, 8, -1]
-        sub_row = [-1, 6, 7,  7,  7,  7,  7,  17,  7,  7,  7,  7,  7, 7, 8, -1]
+        bottom_row = [-1, 6, 9,  1,  1,  1,  1,  5, 1,  1,  1,  1,  1, 10, 8, -1]
+        sub_row = [-1, 6, 7,  7,  7,  7,  8,  -1,  6,  7,  7,  7,  7, 7, 8, -1]
         drain_col = 7
 
         row_index = 0
@@ -66,6 +69,8 @@ class Tilemap():
         self.drainrect.left = self.settings.tile_width * drain_col + self.x_offset
         self.drainrect.inflate_ip(self.settings.tile_width * -0.99, self.settings.tile_height * -0.75)
         self.drainrect.move_ip(0, self.settings.tile_height * -0.5)
+
+        self.blob_exit = BlobExit(self.settings, self.screen, self.exit_images, self)
 
         self.indicies.clear()
         self.indicies.extend(new_indices)
@@ -127,6 +132,9 @@ class Tilemap():
             # Shif the bounding rect down one floor
             row_rect = row_rect.move(0, self.settings.tile_height * 3)
 
+    def update(self, enemies):
+        self.blob_exit.update(enemies)
+
     def draw(self, draw_grid_overlay=False):
         """Draws the tilemap."""
 
@@ -157,3 +165,5 @@ class Tilemap():
         for group in self.block_groups:
             # This works because each block has 'image' member defined
             group.draw(self.screen)
+
+        self.blob_exit.draw()

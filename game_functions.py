@@ -28,6 +28,7 @@ def reset_game(settings, image_res, screen, player, tile_map, enemies):
     enemies.clear()
     generate_new_random_blob(settings, screen, image_res.enemy_blob_images, tile_map, enemies)
     tile_map.generate_platforms()
+    tile_map.blob_exit.stop_gibbing()
 
 def check_keydown_events(settings, image_res, event, screen, player, tile_map, enemies):
     """Respond to key down events"""
@@ -120,6 +121,8 @@ def blitHelpText(settings, screen):
     font.render_to(screen, (10,140), "ESC to exit", settings.font_color)
 
 def update_game_objects(settings, tile_map, player, enemies):
+    tile_map.update(enemies)
+
     # Enemy
     for enemy in enemies:
         enemy.update(tile_map)
