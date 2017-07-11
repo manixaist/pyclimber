@@ -1,16 +1,17 @@
 """This module implements a 2D tilemap for Py-Climber"""
-
+from player import Player
 from block import Block
 from blob_exit import BlobExit
+import game_functions as gf
 import random
-import pygame
 from pygame.sprite import Group
-
+import pygame
 
 class Tilemap():
     """Represents a collection of tile (sprites) that represent a map"""
 
-    def __init__(self, settings, screen, map_indicies, images, block_image, exit_images):
+    def __init__(self, settings, screen, map_indicies, images, block_image, exit_images, player_images, blob_images):
+        """Initialize the map and all of its owned objects"""
         self.settings = settings
         self.screen = screen
         self.images = images
@@ -23,6 +24,11 @@ class Tilemap():
         self.drainrect = pygame.Rect((0,0), (0,0))
         self.blob_exit = None
         self.exit_images = exit_images
+        self.player = None
+        self.player_images = player_images
+        self.blob_images = blob_images
+        self.enemies = []
+        self.new_enemy_counter = 0
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -55,13 +61,21 @@ class Tilemap():
             new_indices.extend(sub_row)
             row_index += 1
 
+        # Out with the old, in with the new
+        self.indicies.clear()
+        self.indicies.extend(new_indices)
+
+        # Add the block platforms
+        self.generate_platforms()
+
+        # Calculate the rect that bounds outer movment of the player (and enemies in most cases)
         self.x_offset = (self.screen_rect.width - (self.settings.map_width * self.settings.tile_width)) // 2
         x_offset2 = self.x_offset + self.settings.tile_width * ((self.settings.map_width - self.settings.map_playable_width)/2)
         self.player_bounds_rect.top = 0
         self.player_bounds_rect.left = x_offset2
         self.player_bounds_rect.width = self.settings.map_playable_width * self.settings.tile_width
         self.player_bounds_rect.height = self.screen_rect.height - ((number_of_subfloor_rows + 1) * self.settings.tile_height)
-        
+
         # Drain collision rect
         self.drainrect.width = self.settings.tile_width
         self.drainrect.height = self.settings.tile_height
@@ -70,12 +84,11 @@ class Tilemap():
         self.drainrect.inflate_ip(self.settings.tile_width * -0.99, self.settings.tile_height * -0.75)
         self.drainrect.move_ip(0, self.settings.tile_height * -0.5)
 
+        # Create the 'exit'
         self.blob_exit = BlobExit(self.settings, self.screen, self.exit_images, self)
 
-        self.indicies.clear()
-        self.indicies.extend(new_indices)
-        
-        self.generate_platforms()
+        # Create the player
+        self.player = Player(self.settings, self.screen, self.player_images, self.player_bounds_rect)
 
     def generate_block(self, x, y):
         """Create a new Block object at the given x,y and return it"""
@@ -132,12 +145,30 @@ class Tilemap():
             # Shif the bounding rect down one floor
             row_rect = row_rect.move(0, self.settings.tile_height * 3)
 
-    def update(self, enemies):
-        self.blob_exit.update(enemies)
+    def update(self):
+        """Update all owned objects (blocks, player, enemies, etc)"""
+        # Check for a reset flag set on the player object
+        if self.player.reset_game:
+            gf.reset_game(self.settings, self.screen, self)
 
-    def draw(self, draw_grid_overlay=False):
-        """Draws the tilemap."""
+        # Update the player
+        self.player.update(self, self.enemies)
 
+        # Check if it's time to add a new enemy to the map
+        self.new_enemy_counter += 1
+        if self.new_enemy_counter >= self.settings.enemy_generation_rate:
+            self.new_enemy_counter = 0
+            gf.generate_new_random_blob(self.settings, self.screen, self.settings.image_res.enemy_blob_images, self)
+
+        # Update enemies that exist
+        for enemy in self.enemies:
+            enemy.update(self)
+
+        # Update the 'exit' sprite
+        self.blob_exit.update(self.enemies)
+
+    def draw_tiles(self, draw_grid_overlay=False):
+        """Draws just the tile portion of the map"""
         # Make the bottom of the map align with the bottom of the screen
         number_of_rows = len(self.indicies) / self.settings.map_width
         map_height = number_of_rows * self.settings.tile_height
@@ -166,4 +197,16 @@ class Tilemap():
             # This works because each block has 'image' member defined
             group.draw(self.screen)
 
+    def draw(self, draw_grid_overlay=False):
+        """Draws the tilemap."""
+        self.draw_tiles(draw_grid_overlay)
+
+        # Draw the player
+        self.player.draw()
+
+        # Draw the enemies
+        for enemy in self.enemies:
+            enemy.draw()
+
+        # Draw the exit
         self.blob_exit.draw()
