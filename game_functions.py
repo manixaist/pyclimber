@@ -26,7 +26,7 @@ def reset_game(settings, screen, tile_map):
     player.idle_counter = 0
     player.idle_top = False
     player.reset_game = False
-    tile_map.enemies.clear()
+    tile_map.enemies.empty()
     generate_new_random_blob(settings, screen, settings.image_res.enemy_blob_images, tile_map)
     tile_map.generate_platforms()
     tile_map.blob_exit.stop_gibbing()
@@ -109,7 +109,7 @@ def generate_new_random_blob(settings, screen, images, tile_map):
         enemy.set_current_animation(settings.anim_name_walk_right)
 
     # Add it to the list
-    tile_map.enemies.append(enemy)
+    tile_map.enemies.add(enemy)
     
 def blit_help_text(settings, screen):
     """Draws the text explaining what keys do what"""

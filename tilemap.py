@@ -19,7 +19,7 @@ class Tilemap():
         self.screen_rect = screen.get_rect()
         self.player_bounds_rect = pygame.Rect((0,0), (0,0))
         self.block_image = block_image
-        self.block_groups = []
+        self.block_group = Group()
         self.x_offset = 0
         self.drainrect = pygame.Rect((0,0), (0,0))
         self.blob_exit = None
@@ -27,7 +27,7 @@ class Tilemap():
         self.player = None
         self.player_images = player_images
         self.blob_images = blob_images
-        self.enemies = []
+        self.enemies = Group()
         self.new_enemy_counter = 0
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
@@ -126,7 +126,8 @@ class Tilemap():
         row_rect = pygame.Rect((self.player_bounds_rect.left, self.player_bounds_rect.top + (self.settings.tile_height * 2)), 
             (self.player_bounds_rect.width, self.settings.tile_width)) 
         
-        self.block_groups.clear()
+        
+        self.block_group.empty()
         for row in range(0, (self.settings.map_number_floors-1)):
             new_group = Group()
 
@@ -141,7 +142,7 @@ class Tilemap():
                 self.generate_blocks(bounding_rect, new_group, random.choice([True, False]), random.choice([True, False]))
             
             # Each row is its own group.  This could limit collision checks later
-            self.block_groups.append(new_group)
+            self.block_group.add(new_group.sprites())
             # Shif the bounding rect down one floor
             row_rect = row_rect.move(0, self.settings.tile_height * 3)
 
@@ -193,10 +194,9 @@ class Tilemap():
                 tiles_draw_per_row = 0
 
         # Draw the blocks
-        for group in self.block_groups:
-            # This works because each block has 'image' member defined
-            group.draw(self.screen)
-
+        # This works because each block has 'image' member defined
+        self.block_group.draw(self.screen)
+    
     def draw(self, draw_grid_overlay=False):
         """Draws the tilemap."""
         self.draw_tiles(draw_grid_overlay)
@@ -204,7 +204,7 @@ class Tilemap():
         # Draw the player
         self.player.draw()
 
-        # Draw the enemies
+        # Draw the enemies - can't use the Gorup method because of our animation logic
         for enemy in self.enemies:
             enemy.draw()
 

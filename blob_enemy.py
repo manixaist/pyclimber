@@ -44,7 +44,7 @@ class Blob(AnimatedSprite):
         
         if not self.dying:
             last_dx = self.dx
-            super().update(tile_map)
+            super().update(tile_map, tile_map.block_group)
             # Blobs only stop when they hit a wall so reverse course
             if last_dx != 0 and self.dx == 0:
                 self.facing_left = not self.facing_left

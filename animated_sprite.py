@@ -34,6 +34,10 @@ class AnimatedSprite(Sprite):
         self.margin_top = 0
         self.margin_bottom = 0
 
+        # Overrides
+        self.bound_by_the_laws_of_physics = True
+        self.bound_by_map = True
+
         # Collision check callback (optional)
         self.collision_check = None
 
@@ -51,8 +55,8 @@ class AnimatedSprite(Sprite):
         """Should be implemented by the derived class"""
         pass
 
-    def update(self, tile_map):
-        """Updates the sprite's basic position, more detailed collision is left to the derived class"""
+    def apply_physics(self, tile_map):
+        """Gravity in this case"""
         # The dy should be controlled by 'gravity' only for now - jumps will impart an
         # Initial up velocity (done in the keyhandler), then gravity acts here on update.
         # Without some sort of gravity approximation, sprites would move at the same speed
@@ -72,6 +76,8 @@ class AnimatedSprite(Sprite):
             self.rect.centery += self.dy
             self.falling_frames += 1
 
+    def basic_bounds_containment(self, tile_map):
+        """Contains the sprite to the player bounds"""
         # Bounds check on bottom edge
         if self.rect.bottom > tile_map.player_bounds_rect.bottom:
             self.rect.bottom = tile_map.player_bounds_rect.bottom
@@ -92,13 +98,21 @@ class AnimatedSprite(Sprite):
                 self.rect.left = tile_map.player_bounds_rect.left - self.margin_left
                 self.dx = 0.0
 
-         # Block collision
-        for group in tile_map.block_groups:
-            intersected_blocks = pygame.sprite.spritecollide(self, group, False, self.collision_check)
+    def update(self, tile_map, collision_check_group=None):
+        """Updates the sprite's basic position, more detailed collision is left to the derived class"""
+        if self.bound_by_the_laws_of_physics:
+            self.apply_physics(tile_map)
+
+        if self.bound_by_map:
+            self.basic_bounds_containment(tile_map)
+        
+         # Sprite collision
+        if collision_check_group:
+            intersected_sprites = pygame.sprite.spritecollide(self, collision_check_group, False, self.collision_check)
             # This is required by the implementing class, this function will allow the sub-types of
             # sprite objects to handle the collisions differently - just like the self.collision_check
             # function allows them to alter the actual collision detection (e.g. based on transparent margins)
-            self.handle_collision(intersected_blocks, group)
+            self.handle_collision(intersected_sprites, collision_check_group)
 
     def finish_update(self):
         """Common code to close out a frame update"""

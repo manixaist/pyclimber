@@ -1,6 +1,7 @@
 """This module implements the player object (sprite) for Py-Climber"""
 
 import game_functions as gf
+from pygame.sprite import Group
 from animation import Animation
 from animated_sprite import AnimatedSprite
 import pygame
@@ -98,7 +99,7 @@ class Player(AnimatedSprite):
                     self.reset_game = True
             else:
                 # AnimatedSprite handles most of this
-                super().update(tile_map)
+                super().update(tile_map, tile_map.block_group)
                 if self.dy == 0:
                     self.air_jumps = 0
 
