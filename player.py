@@ -1,7 +1,7 @@
 """This module implements the player object (sprite) for Py-Climber"""
 
 import game_functions as gf
-from tilemap import Tilemap
+from pygame.sprite import Group
 from animation import Animation
 from animated_sprite import AnimatedSprite
 import pygame
@@ -9,13 +9,13 @@ import pygame
 class Player(AnimatedSprite):
     """Player object"""
 
-    def __init__(self, settings, screen, images, tile_map):
+    def __init__(self, settings, screen, images, initial_bounding_rect):
         """Initialize the player sprite"""
         # Calls AnimatedSprite, which in turn will call pygame.Sprite __init_()
         super().__init__(settings, screen, images)
 
         # Override the initial position
-        self.rect.bottom = tile_map.player_bounds_rect.bottom
+        self.rect.bottom = initial_bounding_rect.bottom
         self.rect.left = self.screen.get_rect().width / 2
 
         # Set the transparent margins
@@ -99,7 +99,7 @@ class Player(AnimatedSprite):
                     self.reset_game = True
             else:
                 # AnimatedSprite handles most of this
-                super().update(tile_map)
+                super().update(tile_map, tile_map.block_group)
                 if self.dy == 0:
                     self.air_jumps = 0
 

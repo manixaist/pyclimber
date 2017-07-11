@@ -35,6 +35,10 @@ class BlobExit(AnimatedSprite):
         # This is the count of frames the generator will be active upon collision with a blob
         self.particles_frames_max = self.settings.particle_gen_max_frames
 
+        # Override default update handling in the base
+        self.bound_by_the_laws_of_physics = False
+        self.bound_by_map = False
+
     def generate_particles(self):
         """Generates a list of initial velocities and colors used by the generator as a callback, the list returned
         should hold a tuple for velocities followed by a color"""
@@ -69,14 +73,9 @@ class BlobExit(AnimatedSprite):
 
     def update(self, enemies):
         """Update - mostly look for new enemies to gib"""
-        # Check for fresh meat to grind
-        for blob in enemies:
-            if blob.rect.colliderect(self.rect):
-                self.start_gibbing()
-
         # Let the particle generator update itself
         self.particle_gen.update()
-
+        super().update(self.tile_map, self.tile_map.enemies)
         # common animated sprite code
         self.finish_update()
 
@@ -85,7 +84,10 @@ class BlobExit(AnimatedSprite):
         pass
     
     def handle_collision(self, collision_list, group):
-        # TODO - rework pattern here, this is blocks and useless in this case
-        # As this was added on, the design became less solid.  It works fine as
-        # is, but this could benefit from a rework
-        pass
+        """In this case, we are checking against enemies colliding with the blade"""
+        # Check for fresh meat to grind
+        for blob in collision_list:
+            if blob.rect.colliderect(self.rect):
+                self.start_gibbing()
+                # Don't need to remove it from the group here, we could, but a future
+                # update to the blob will catch it
