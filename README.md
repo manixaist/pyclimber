@@ -39,7 +39,7 @@ The simplest of sprites: it has only 1 image and once placed never moves.  It ca
 Tracks animation sequences for sprites with multiple sets of frames (walking left vs right vs jumping, etc).  This really boils down to managing a list of integers.  Not exciting, but needed.
 
 ### animated_sprite.py
-This is a base-class shared by the 2 classic sprites in the game (the player and the enemies).  Common physics code (simple gravity) and bounds/collision checking is done here.  There are hooks to allow the derived classes to behave differently on updates or collisions.
+This is a base-class shared by the 3 classic sprites in the game (the player, the enemies, and the blade).  Common physics code (simple gravity) and bounds/collision checking is done here.  There are hooks to allow the derived classes to behave differently on updates or collisions.
 
 ### blob_enemy.py
 The simplest of animated sprites, it only has 3 modes: walking left, walking right, and falling.  It shares common collision detection for the map boundary and the blocks, but it alone can fall through the lower grate.
