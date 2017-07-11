@@ -5,7 +5,7 @@
 
 *Demo*
 
-![](http://i.imgur.com/X623R48.gif)
+![](http://i.imgur.com/ucUYc06.gif)
 
 ## Running the Game
 This should be all you need provided you have the pygame module installed as well as python3
