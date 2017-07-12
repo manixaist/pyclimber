@@ -2,7 +2,7 @@
 
 import sys
 import random
-from blob_enemy import Blob
+from src.blob_enemy import Blob
 import pygame
 import pygame.freetype
 

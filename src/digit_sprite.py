@@ -1,5 +1,5 @@
 """This module implements a sprite that represents a single digit 0-9"""
-from flyin_sprite import FlyInSprite
+from src.flyin_sprite import FlyInSprite
 
 class DigitSprite(FlyInSprite):
     """Digit sprite object which can also flyin to position"""

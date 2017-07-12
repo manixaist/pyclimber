@@ -1,5 +1,5 @@
 """This module implements a sprite that shows the level text"""
-from flyin_sprite import FlyInSprite
+from src.flyin_sprite import FlyInSprite
 
 class LevelSprite(FlyInSprite):
     """Static image sprite for 'LEVEL' text"""

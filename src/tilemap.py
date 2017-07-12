@@ -1,9 +1,9 @@
 """This module implements a 2D tilemap for Py-Climber"""
-from player import Player
-from block import Block
-from blob_exit import BlobExit
-from level_info import LevelInfo
-import game_functions as gf
+from src.player import Player
+from src.block import Block
+from src.blob_exit import BlobExit
+from src.level_info import LevelInfo
+import src.game_functions as gf
 import random
 from pygame.sprite import Group
 import pygame

@@ -1,5 +1,5 @@
 """Particle generator for Py-Climber"""
-from particle import Particle
+from src.particle import Particle
 import random
 
 class ParticleGenerator():

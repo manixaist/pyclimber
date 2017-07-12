@@ -2,8 +2,8 @@
 
 import pygame
 from pygame.sprite import Sprite
-from animation import Animation
-from animated_sprite import AnimatedSprite
+from src.animation import Animation
+from src.animated_sprite import AnimatedSprite
 
 class Blob(AnimatedSprite):
     """Blob enemy object"""

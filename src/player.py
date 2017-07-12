@@ -1,9 +1,9 @@
 """This module implements the player object (sprite) for Py-Climber"""
 
-import game_functions as gf
+import src.game_functions as gf
 from pygame.sprite import Group
-from animation import Animation
-from animated_sprite import AnimatedSprite
+from src.animation import Animation
+from src.animated_sprite import AnimatedSprite
 import pygame
 
 class Player(AnimatedSprite):

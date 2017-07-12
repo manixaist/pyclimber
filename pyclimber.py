@@ -1,9 +1,9 @@
 """This module is the main entry for the Py-Climber game"""
 
-import game_functions as gf
-from image_resources import ImageResources
-from settings import Settings
-from tilemap import Tilemap
+import src.game_functions as gf
+from src.image_resources import ImageResources
+from src.settings import Settings
+from src.tilemap import Tilemap
 import random
 import pygame
 

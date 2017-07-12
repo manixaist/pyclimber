@@ -1,6 +1,6 @@
 """This module implements the information display for the current level"""
-from digit_sprite import DigitSprite
-from level_sprite import LevelSprite
+from src.digit_sprite import DigitSprite
+from src.level_sprite import LevelSprite
 
 class LevelInfo():
     """Container for the sprites that fly in for the current level display"""

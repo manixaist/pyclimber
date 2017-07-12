@@ -1,7 +1,7 @@
 """This module implements the exit for blob sprites on the map"""
-from particle_generator import ParticleGenerator
-from animation import Animation
-from animated_sprite import AnimatedSprite
+from src.particle_generator import ParticleGenerator
+from src.animation import Animation
+from src.animated_sprite import AnimatedSprite
 import random
 
 class BlobExit(AnimatedSprite):
