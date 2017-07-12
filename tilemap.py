@@ -199,14 +199,14 @@ class Tilemap():
     
     def draw(self, draw_grid_overlay=False):
         """Draws the tilemap."""
+        # Draw the enemies - can't use the Gorup method because of our animation logic
+        for enemy in self.enemies:
+            enemy.draw()
+
         self.draw_tiles(draw_grid_overlay)
 
         # Draw the player
         self.player.draw()
-
-        # Draw the enemies - can't use the Gorup method because of our animation logic
-        for enemy in self.enemies:
-            enemy.draw()
 
         # Draw the exit
         self.blob_exit.draw()
