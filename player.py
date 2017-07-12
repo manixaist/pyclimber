@@ -78,15 +78,18 @@ class Player(AnimatedSprite):
                 else:
                     self.set_current_animation(self.settings.anim_name_jump_down_right)
 
-    def collided(self, player, block):
+    def collided(self, player, sprite):
         """This callback is used to modify the basic collision check for the player sprite"""
+        if sprite.dying:
+            return False
+        
         player_rect = player.rect.copy()
         # shrink the player rect based on the margins
         player_rect.height -= player.settings.player_sprite_top_margin
         player_rect.width -= (player.settings.player_sprite_horz_margin * 2)
         player_rect.midbottom = player.rect.midbottom
         # Now do a standard check with the adjusted Rect
-        return player_rect.colliderect(block.rect)
+        return player_rect.colliderect(sprite.rect)
 
     def update(self, tile_map, enemies):
         """Updates the player sprite's position"""
@@ -98,7 +101,8 @@ class Player(AnimatedSprite):
                 if self.idle_counter > (30 * 3):
                     self.reset_game = True
             else:
-                # AnimatedSprite handles most of this
+                # AnimatedSprite handles most of this, but save the current enemies Group for the handler
+                self.enemies = enemies
                 super().update(tile_map, tile_map.block_group)
                 if self.dy == 0:
                     self.air_jumps = 0
@@ -154,6 +158,10 @@ class Player(AnimatedSprite):
                     self.rect.top = block.rect.bottom - self.settings.player_sprite_top_margin
                     # remove blocks struck from the bottom
                     group.remove(collision_list)
+
+                    # remove enemies above those blocks
+                    self.remove_enemies_above_blocks(collision_list)
+
             # Now check the left
             elif self.dx > 0:
                 if side_collision:
@@ -164,3 +172,17 @@ class Player(AnimatedSprite):
                     self.dx = 0
                     self.rect.left = block.rect.right - self.settings.player_sprite_horz_margin
 
+    def remove_enemies_above_blocks(self, collision_list):
+        # build a kill rect to check against the enemies
+        kill_rect = collision_list[0].rect
+        for sprite in collision_list:
+            kill_rect.union_ip(sprite.rect)
+
+        # Shift up one block
+        kill_rect.move_ip(0, collision_list[0].rect.height * -1)
+
+        # Now see if any enemies are in this block
+        for enemy in self.enemies:
+            if kill_rect.colliderect(enemy.rect):
+                enemy.dying = True
+                enemy.dy = self.settings.enemy_death_dy

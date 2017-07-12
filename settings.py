@@ -51,7 +51,8 @@ class Settings():
         self.enemy_blob_width = 16
         self.enemy_blob_height = 16
         self.enemy_blob_dx = 1
-        self.enemy_generation_rate = 120
+        self.enemy_generation_rate = 60
+        self.enemy_death_dy = -10
         
         # Tile settings
         self.tile_width = 24

@@ -13,6 +13,7 @@ class Block(Sprite):
         self.image = image
         self.rect = self.image.get_rect()
         self.screen_rect = screen.get_rect()
+        self.dying = False
 
     # 'draw' is required by pygame.Sprite.Group for drawing in batches
     def draw(self):

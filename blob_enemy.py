@@ -20,13 +20,17 @@ class Blob(AnimatedSprite):
         self.animations[self.settings.anim_name_walk_right] = Animation([3, 4, 5, 4], 2)
         self.animations[self.settings.anim_name_jump_down_left] = Animation([6], 1)
         self.animations[self.settings.anim_name_jump_down_right] = Animation([6], 1)
+        self.animations[self.settings.anim_name_dead] = Animation([7], 60)
         self.current_animation = self.settings.anim_name_walk_right
         self.facing_left = False
 
     def update_current_animation(self):
         """Set the correct animation based on state"""
+        # DYING
+        if self.dying:
+            self.set_current_animation(self.settings.anim_name_dead)
         # WALKING
-        if self.dy == 0:
+        elif self.dy == 0:
             if self.dx < 0:
                 self.set_current_animation(self.settings.anim_name_walk_left)
             else:
