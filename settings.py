@@ -47,12 +47,22 @@ class Settings():
         self.anim_name_dead = 'DEAD'
         self.anim_name_exit = 'EXIT'
 
+        # digit sizes
+        self.digit_width = 36
+        self.digit_height = 48
+        
         # Blob enemy settings
         self.enemy_blob_width = 16
         self.enemy_blob_height = 16
         self.enemy_blob_dx = 1
-        self.enemy_generation_rate = 60
+        # Upwards velocity when killed by player from block break
         self.enemy_death_dy = -10
+        # starting rate
+        self.enemy_generation_base_rate = 120
+        # current rate
+        self.enemy_generation_rate = self.enemy_generation_base_rate
+        # amount to decrease rate per level
+        self.enemy_generation_level_rate = 5
         
         # Tile settings
         self.tile_width = 24
@@ -65,11 +75,11 @@ class Settings():
         self.particle_gen_max_frames = 40
         self.particle_gen_per_frame = 5
         
-        
-        # Size of a "level
+        # Map settings
         self.map_width = 16
         self.map_height = 10
         self.map_playable_width = 10
         self.map_indicies = [-1]
         self.map_number_floors = 8
         self.map_number_subfloors = 1
+

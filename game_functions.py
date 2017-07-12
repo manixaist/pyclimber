@@ -17,19 +17,8 @@ def check_events(settings, screen, tile_map):
         elif event.type == pygame.KEYUP:
         	check_keyup_events(settings, event, screen, tile_map)
 
-def reset_game(settings, screen, tile_map):
-    player = tile_map.player
-    player.rect.bottom = tile_map.player_bounds_rect.bottom
-    player.dx = 0.0
-    player.dy = 0.0
-    player.dying = False
-    player.idle_counter = 0
-    player.idle_top = False
-    player.reset_game = False
-    tile_map.enemies.empty()
-    generate_new_random_blob(settings, screen, settings.image_res.enemy_blob_images, tile_map)
-    tile_map.generate_platforms()
-    tile_map.blob_exit.stop_gibbing()
+def reset_game(tile_map):
+    tile_map.reset()
 
 def check_keydown_events(settings, event, screen, tile_map):
     """Respond to key down events"""
@@ -41,7 +30,7 @@ def check_keydown_events(settings, event, screen, tile_map):
         generate_new_random_blob(settings, screen, settings.image_res.enemy_blob_images, tile_map)
         
     if event.key == pygame.K_r:
-        reset_game(settings, screen, tile_map)
+        reset_game(tile_map)
     
     if event.key == pygame.K_LEFT:
         if not player.idle_top:
@@ -114,15 +103,22 @@ def generate_new_random_blob(settings, screen, images, tile_map):
 def blit_help_text(settings, screen):
     """Draws the text explaining what keys do what"""
     color_white = (255, 255, 255)
+    y = screen.get_rect().bottom - 48
     font = settings.font
-    font.render_to(screen, (10,10), "LEFT/RIGHT arrows to walk", settings.font_color)
-    font.render_to(screen, (10,30), "SPACE to jump", settings.font_color)
-    font.render_to(screen, (15,50), "...can jump once in air", settings.font_color)
-    font.render_to(screen, (10,70), "'r' to reset", settings.font_color)
-    font.render_to(screen, (10,90), "'a' to add a new enemy", settings.font_color)
-    font.render_to(screen, (10,120), "F9 to toggle fullscreen", settings.font_color)
-    font.render_to(screen, (10,140), "ESC to exit", settings.font_color)
-
+    font.render_to(screen, (10,y), "ESC to exit", settings.font_color)
+    y -= 20
+    font.render_to(screen, (10,y), "F9 to toggle fullscreen", settings.font_color)
+    y -= 20
+    font.render_to(screen, (10,y), "'a' to add a new enemy", settings.font_color)
+    y -= 20
+    font.render_to(screen, (10,y), "'r' to reset", settings.font_color)
+    y -= 20
+    font.render_to(screen, (15,y), "...can jump once in air", settings.font_color)
+    y -= 20
+    font.render_to(screen, (10,y), "SPACE to jump", settings.font_color)
+    y -= 20
+    font.render_to(screen, (10,y), "LEFT/RIGHT arrows to walk", settings.font_color)
+    
 def update_game_objects(settings, tile_map):
     tile_map.update()
 

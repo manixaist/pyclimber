@@ -33,7 +33,7 @@ def run_game():
     tile_map.generate_basic_map(settings.map_number_floors , settings.map_number_subfloors)
 
     # Reset the game
-    gf.reset_game(settings, screen, tile_map)
+    gf.reset_game(tile_map)
 
     # Use pygame's simple loop management for a fixed 30 FPS
     clock = pygame.time.Clock()

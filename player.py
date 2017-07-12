@@ -15,6 +15,7 @@ class Player(AnimatedSprite):
         super().__init__(settings, screen, images)
 
         # Override the initial position
+        self.initial_bounding_rect = initial_bounding_rect
         self.rect.bottom = initial_bounding_rect.bottom
         self.rect.left = self.screen.get_rect().width / 2
 
@@ -31,7 +32,7 @@ class Player(AnimatedSprite):
         self.max_air_jumps = settings.player_max_air_jumps
         self.idle_top = False
         self.idle_counter = 0
-        self.reset_game = False
+        self.won_level = False
 
         # Add the animations for the player
         self.animations[self.settings.anim_name_idle_left] = Animation([0, 1, 2, 3, 2, 1], 5)
@@ -45,6 +46,17 @@ class Player(AnimatedSprite):
         self.animations[self.settings.anim_name_dead] = Animation([4], 5)
         self.current_animation = self.settings.anim_name_idle_left
         self.facing_left = True
+
+    def reset(self):
+        """Reset the player object for the map"""
+        player = self
+        player.rect.bottom = self.initial_bounding_rect.bottom
+        player.dx = 0.0
+        player.dy = 0.0
+        player.dying = False
+        player.idle_counter = 0
+        player.idle_top = False
+        player.won_level = False
 
     def update_current_animation(self):
         """Set the correct animation based on state"""
@@ -99,7 +111,7 @@ class Player(AnimatedSprite):
             if self.idle_top:
                 self.idle_counter +=1
                 if self.idle_counter > (30 * 3):
-                    self.reset_game = True
+                    self.won_level = True
             else:
                 # AnimatedSprite handles most of this, but save the current enemies Group for the handler
                 self.enemies = enemies

@@ -2,6 +2,7 @@
 from player import Player
 from block import Block
 from blob_exit import BlobExit
+from level_info import LevelInfo
 import game_functions as gf
 import random
 from pygame.sprite import Group
@@ -29,6 +30,17 @@ class Tilemap():
         self.blob_images = blob_images
         self.enemies = Group()
         self.new_enemy_counter = 0
+        self.level_info = LevelInfo(self.settings, self.screen)
+        
+    def reset(self):
+        """Resets the game to the starting state"""
+        self.player.reset()
+        self.enemies.empty()
+        gf.generate_new_random_blob(self.settings, self.screen, self.settings.image_res.enemy_blob_images, self)
+        self.generate_platforms()
+        self.blob_exit.stop_gibbing()
+        self.level_info = LevelInfo(self.settings, self.screen)
+        self.settings.enemy_generation_rate = self.settings.enemy_generation_base_rate
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -149,8 +161,14 @@ class Tilemap():
     def update(self):
         """Update all owned objects (blocks, player, enemies, etc)"""
         # Check for a reset flag set on the player object
-        if self.player.reset_game:
-            gf.reset_game(self.settings, self.screen, self)
+        if self.player.won_level:
+            self.player.reset()
+            self.enemies.empty()
+            gf.generate_new_random_blob(self.settings, self.screen, self.settings.image_res.enemy_blob_images, self)
+            self.generate_platforms()
+            self.blob_exit.stop_gibbing()
+            self.level_info.increase_level()
+            self.settings.enemy_generation_rate -= self.settings.enemy_generation_level_rate
 
         # Update the player
         self.player.update(self, self.enemies)
@@ -167,6 +185,9 @@ class Tilemap():
 
         # Update the 'exit' sprite
         self.blob_exit.update(self.enemies)
+
+        # Update the level info
+        self.level_info.update()
 
     def draw_tiles(self, draw_grid_overlay=False):
         """Draws just the tile portion of the map"""
@@ -210,3 +231,6 @@ class Tilemap():
 
         # Draw the exit
         self.blob_exit.draw()
+
+        # Draw the level info
+        self.level_info.draw()
