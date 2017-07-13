@@ -19,6 +19,9 @@ class Settings():
         self.font = pygame.freetype.SysFont(None, 16)
         self.font_color = (255, 255, 255)
 
+        # Bonus font
+        self.bonus_font = pygame.freetype.SysFont(None, 10)
+
         # Global sprite settings
         self.gravity = 1.4
         self.terminal_velocity = 12

@@ -4,6 +4,7 @@ from src.block import Block
 from src.blob_exit import BlobExit
 from src.level_info import LevelInfo
 from src.level_timer import LevelTimer
+from src.time_bonus import TimeBonus
 import src.game_functions as gf
 import random
 from pygame.sprite import Group
@@ -33,7 +34,8 @@ class Tilemap():
         self.new_enemy_counter = 0
         self.level_info = LevelInfo(self.settings, self.screen)
         self.level_timer = LevelTimer(self.settings, self.screen)
-
+        self.bonuses = []
+        
     def reset(self):
         """Resets the game to the starting state"""
         self.player.reset()
@@ -103,7 +105,7 @@ class Tilemap():
         self.blob_exit = BlobExit(self.settings, self.screen, self.exit_images, self)
 
         # Create the player
-        self.player = Player(self.settings, self.screen, self.player_images, self.player_bounds_rect)
+        self.player = Player(self.settings, self.screen, self.player_images, self.player_bounds_rect, self)
 
         # Position the timer
         self.level_timer.position_frame(self.screen_rect.centery, self.player_bounds_rect.right + self.settings.tile_width * 2)
@@ -202,6 +204,12 @@ class Tilemap():
         # Update the level timer
         self.level_timer.update()
 
+        # bonuses
+        for bonus in self.bonuses:
+            bonus.update()
+            if not bonus.alive():
+                self.bonuses.remove(bonus)
+
     def draw_tiles(self, draw_grid_overlay=False):
         """Draws just the tile portion of the map"""
         # Make the bottom of the map align with the bottom of the screen
@@ -250,3 +258,7 @@ class Tilemap():
 
         # Draw the level timer
         self.level_timer.draw()
+
+        # Draw bonuses
+        for bonus in self.bonuses:
+            bonus.draw(self.screen)

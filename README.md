@@ -5,7 +5,7 @@
 
 *Demo*
 
-![](http://i.imgur.com/onSjPBU.gif)
+![](http://i.imgur.com/6IYe49H.gif)
 
 ## Running the Game
 You will need the pygame and python3 files installed, as well as the images from my repository (e.g. .\\images\\*) wherever you copy the scripts.  Cloning the repository is the easiest method, or download the whole thing.  I don't have a lot of "extra" stuff in the repo
@@ -71,7 +71,8 @@ Container class for the sprites that fly in for the current level display.  It c
 ### level_timer.py
 Container class for a frame background image and several digit images (different iamges from the level digits, but same code driving it) which represent the time spent on the current level MM:SS:hh
 
-
+### time_bonus.py
+Text appearing above slain foes showing a time bonus reduction.  It slowly flashes and rises before vanishing.  The bonus is reflected in the level_timer
 
 
 

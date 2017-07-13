@@ -1,18 +1,19 @@
 """This module implements the player object (sprite) for Py-Climber"""
 
-import src.game_functions as gf
-from pygame.sprite import Group
 from src.animation import Animation
 from src.animated_sprite import AnimatedSprite
+from src.time_bonus import TimeBonus
 import pygame
 
 class Player(AnimatedSprite):
     """Player object"""
 
-    def __init__(self, settings, screen, images, initial_bounding_rect):
+    def __init__(self, settings, screen, images, initial_bounding_rect, tile_map):
         """Initialize the player sprite"""
         # Calls AnimatedSprite, which in turn will call pygame.Sprite __init_()
         super().__init__(settings, screen, images)
+
+        self.tile_map = tile_map
 
         # Override the initial position
         self.initial_bounding_rect = initial_bounding_rect
@@ -201,3 +202,5 @@ class Player(AnimatedSprite):
             if kill_rect.colliderect(enemy.rect):
                 enemy.dying = True
                 enemy.dy = self.settings.enemy_death_dy
+                bonus = TimeBonus(enemy.rect, "-0.5 seconds", 500, self.tile_map.level_timer, self.settings.bonus_font)
+                self.tile_map.bonuses.append(bonus)
