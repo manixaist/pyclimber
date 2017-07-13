@@ -69,7 +69,7 @@ Slightly more complex flyin sprite which can update its current static image (mu
 Container class for the sprites that fly in for the current level display.  It consists of 2 digit sprites and the level text.  Each sprite flies in on a different path and come together to form the display.  This is triggered on game reset and once the player reaches the top of the map and advances levels.
 
 ### level_timer.py
-Container class for a frame background image and several digit images (different iamges from the level digits, but same code driving it) which represent the time spent on the current level MM:SS:mm
+Container class for a frame background image and several digit images (different iamges from the level digits, but same code driving it) which represent the time spent on the current level MM:SS:hh
 
 
 
