@@ -33,6 +33,7 @@ class Player(AnimatedSprite):
         self.idle_top = False
         self.idle_counter = 0
         self.won_level = False
+        self.at_top = False
 
         # Add the animations for the player
         self.animations[self.settings.anim_name_idle_left] = Animation([0, 1, 2, 3, 2, 1], 5)
@@ -57,6 +58,7 @@ class Player(AnimatedSprite):
         player.idle_counter = 0
         player.idle_top = False
         player.won_level = False
+        player.at_top = False
 
     def update_current_animation(self):
         """Set the correct animation based on state"""
@@ -131,6 +133,7 @@ class Player(AnimatedSprite):
                 player_walking = ((self.current_animation == self.settings.anim_name_walk_left) or (self.current_animation == self.settings.anim_name_walk_right))
                 if (self.rect.bottom <= tile_map.player_bounds_rect.top + 2 * self.settings.tile_height) and (player_idle or player_walking):
                     self.idle_top = True
+                    self.at_top = True
                     self.idle_counter = 0
         else:
             if self.rect.top > self.screen_rect.bottom:

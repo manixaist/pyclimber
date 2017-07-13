@@ -4,12 +4,12 @@ from src.flyin_sprite import FlyInSprite
 class DigitSprite(FlyInSprite):
     """Digit sprite object which can also flyin to position"""
 
-    def __init__(self, settings, screen, digit=0):
+    def __init__(self, settings, screen, images, digit=0):
         """Init the sprite"""
-        super().__init__(settings, screen, settings.image_res.digit_images[0])
+        super().__init__(settings, screen, images[0])
 
         # cache these objects
-        self.images = settings.image_res.digit_images
+        self.images = images
         self.image_index = 0
         self.set_digit(digit)
         self.screen_rect = screen.get_rect()

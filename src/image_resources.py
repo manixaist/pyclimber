@@ -38,6 +38,14 @@ class ImageResources():
         digit_images = self.digit_images
         self.load_image_to_tiles('images/digits.bmp', self.settings.digit_width, self.settings.digit_height, digit_images)
 
+        # Load 'LCD' digits
+        self.lcd_digit_images = []
+        lcd_digit_images = self.lcd_digit_images
+        self.load_image_to_tiles('images/timer_digits.bmp', self.settings.lcd_digit_width, self.settings.lcd_digit_height, lcd_digit_images)
+
+        # Load timer frames - no need for a color key on this one
+        self.lcd_frame_image = pygame.image.load('images/timer_frame.bmp')
+
         # Load 'LEVEL' text
         self.level_image = pygame.image.load('images/level_text.bmp')
         self.level_image.set_colorkey(self.settings.color_key)

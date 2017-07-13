@@ -3,6 +3,7 @@ from src.player import Player
 from src.block import Block
 from src.blob_exit import BlobExit
 from src.level_info import LevelInfo
+from src.level_timer import LevelTimer
 import src.game_functions as gf
 import random
 from pygame.sprite import Group
@@ -31,7 +32,8 @@ class Tilemap():
         self.enemies = Group()
         self.new_enemy_counter = 0
         self.level_info = LevelInfo(self.settings, self.screen)
-        
+        self.level_timer = LevelTimer(self.settings, self.screen)
+
     def reset(self):
         """Resets the game to the starting state"""
         self.player.reset()
@@ -41,6 +43,7 @@ class Tilemap():
         self.blob_exit.stop_gibbing()
         self.level_info = LevelInfo(self.settings, self.screen)
         self.settings.enemy_generation_rate = self.settings.enemy_generation_base_rate
+        self.level_timer.reset()
 
     def generate_basic_map(self, number_of_floors, number_of_subfloor_rows=0):
         """Builds a basic tiled map - this depends on the index ordering of the tiles image"""
@@ -102,6 +105,9 @@ class Tilemap():
         # Create the player
         self.player = Player(self.settings, self.screen, self.player_images, self.player_bounds_rect)
 
+        # Position the timer
+        self.level_timer.position_frame(self.screen_rect.centery, self.player_bounds_rect.right + self.settings.tile_width * 2)
+
     def generate_block(self, x, y):
         """Create a new Block object at the given x,y and return it"""
         new_block = Block(self.settings, self.screen, self.block_image)
@@ -160,6 +166,9 @@ class Tilemap():
 
     def update(self):
         """Update all owned objects (blocks, player, enemies, etc)"""
+        if self.player.at_top:
+            self.level_timer.stop()
+
         # Check for a reset flag set on the player object
         if self.player.won_level:
             self.player.reset()
@@ -169,6 +178,7 @@ class Tilemap():
             self.blob_exit.stop_gibbing()
             self.level_info.increase_level()
             self.settings.enemy_generation_rate -= self.settings.enemy_generation_level_rate
+            self.level_timer.reset()
 
         # Update the player
         self.player.update(self, self.enemies)
@@ -188,6 +198,9 @@ class Tilemap():
 
         # Update the level info
         self.level_info.update()
+
+        # Update the level timer
+        self.level_timer.update()
 
     def draw_tiles(self, draw_grid_overlay=False):
         """Draws just the tile portion of the map"""
@@ -234,3 +247,6 @@ class Tilemap():
 
         # Draw the level info
         self.level_info.draw()
+
+        # Draw the level timer
+        self.level_timer.draw()

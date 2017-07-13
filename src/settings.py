@@ -47,9 +47,23 @@ class Settings():
         self.anim_name_dead = 'DEAD'
         self.anim_name_exit = 'EXIT'
 
-        # digit sizes
+        # level digit sizes
         self.digit_width = 36
         self.digit_height = 48
+
+        # Timer digits (LCD style)
+        self.lcd_digit_width = 16
+        self.lcd_digit_height = 24
+
+        # Timer frame
+        # Pixels from either side to the digit area
+        self.lcd_frame_padding_horz = 5
+        # Pixels above and below the digit area
+        self.lcd_frame_padding_vert = 4
+        # Horz spacing between related digits e.g. M M or S S
+        self.lcd_frame_digit_padding_horz_minor = 2
+        # Horz spacing between unrelated digits e.g. MM:SS or SS:mm
+        self.lcd_frame_digit_padding_horz_major = 8
         
         # Blob enemy settings
         self.enemy_blob_width = 16
