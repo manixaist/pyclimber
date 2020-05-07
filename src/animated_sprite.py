@@ -19,9 +19,9 @@ class AnimatedSprite(Sprite):
         self.rect = images[0].get_rect()
 
         # Initially not moving and not falling
-        self.dx = 0.0
+        self.dx = 1.15
         self.dy = 0.0
-        self.falling = False
+        self.falling = True
         self.falling_frames = 0
         self.dying = False
 
